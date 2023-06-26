@@ -49,32 +49,35 @@ def cfg_from_list(cfg_list, config):
 
 
 def merge_new_config(config, new_config):
-    if '_BASE_CONFIG_' in new_config:
+    if '_BASE_CONFIG_' in new_config: #因为上层yaml转换来的对象new_config是一个字典，这里判断BASE是否是其中的一个键
         with open(new_config['_BASE_CONFIG_'], 'r') as f:
             try:
                 yaml_config = yaml.safe_load(f, Loader=yaml.FullLoader)
             except:
                 yaml_config = yaml.safe_load(f)
+                #print(new_config['_BASE_CONFIG_']) #打印的就是cfgs/dataset_configs/kitti_dataset.yaml
+                # print(type(yaml_config)) #yaml也是一个dict
         config.update(EasyDict(yaml_config))
-
+    # 这段代码的作用是打开_BASE_CONFIG_将里面的配置信息加载到config里面去
     for key, val in new_config.items():
         if not isinstance(val, dict):
             config[key] = val
+            # print(config)
             continue
         if key not in config:
             config[key] = EasyDict()
         merge_new_config(config[key], val)
 
     return config
+    #这段代码是递归，然后原样不动的把例如pointrcnn里面的配置信息加载到config里面去
 
 
 def cfg_from_yaml_file(cfg_file, config):
     with open(cfg_file, 'r') as f:
         try:
-            new_config = yaml.safe_load(f, Loader=yaml.FullLoader)
+            new_config = yaml.safe_load(f, Loader=yaml.FullLoader) #此时new_config是一个字典dict
         except:
             new_config = yaml.safe_load(f)
-
         merge_new_config(config=config, new_config=new_config)
 
     return config
@@ -83,3 +86,4 @@ def cfg_from_yaml_file(cfg_file, config):
 cfg = EasyDict()
 cfg.ROOT_DIR = (Path(__file__).resolve().parent / '../').resolve()
 cfg.LOCAL_RANK = 0
+# cfg就是预先定义的一个字典，有两个键值对了已经

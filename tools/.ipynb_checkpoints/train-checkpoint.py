@@ -1,10 +1,10 @@
-import _init_path #待看
-import argparse 
+import _init_path
+import argparse
 import datetime
 import glob
 import os
-from pathlib import Path #待看
-from test import repeat_eval_ckpt #待看
+from pathlib import Path
+from test import repeat_eval_ckpt
 
 import torch
 import torch.nn as nn
@@ -53,10 +53,7 @@ def parse_config():
 
     args = parser.parse_args()
 
-    # 把pointrcnn.yaml也就是args.cfg_file里面的配置信息还有 
-    # _BASE_CONFIG_: cfgs/dataset_configs/kitti_dataset.yaml里面的配置信息
-    # 还有ROOT_DIR和LOCAL_RANK的配置信息都加载到cfg这个变量中去，形成一个大字典
-    cfg_from_yaml_file(args.cfg_file, cfg) #这里的cfg是config里面先定义的
+    cfg_from_yaml_file(args.cfg_file, cfg)
     cfg.TAG = Path(args.cfg_file).stem
     cfg.EXP_GROUP_PATH = '/'.join(args.cfg_file.split('/')[1:-1])  # remove 'cfgs' and 'xxxx.yaml'
     
